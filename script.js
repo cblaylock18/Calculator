@@ -140,15 +140,19 @@ const displayNumber = (number) => {
         display.textContent = "";
         display.classList.remove("to-be-deleted");
     }
-    if (display.textContent === "0") {
-        display.textContent = number;
+    if (number === "+/-") {
+        if (display.textContent === "0" || display.textContent === "") {
+            display.textContent = display.textContent;
+        } else {
+            display.textContent = multiply(display.textContent, -1);
+        }
     } else if (
         display.textContent.length > 10 ||
         [...display.textContent.concat(number).matchAll(/\./g)].length > 1
     ) {
         return;
-    } else if (number === "+/-") {
-        display.textContent = multiply(display.textContent, -1);
+    } else if (display.textContent === "0") {
+        display.textContent = number;
     } else {
         display.textContent += number;
     }
@@ -172,6 +176,7 @@ let performOperation = function (a, b, c) {
         if (isEnter) {
             firstNum = "";
             currentOperator = "";
+            display.classList.add("to-be-deleted");
             isEnter = 0;
         } else {
             firstNum = display.textContent; // Maintain the result as the new firstNum
