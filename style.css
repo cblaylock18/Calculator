@@ -1,7 +1,7 @@
-.button img {
-    min-width: 12px;
-    height: auto;
-    display: block;
+.button {
+    min-height: 75px;
+    min-width: 75px;
+    margin: 0;
 }
 
 .button:hover {
@@ -12,4 +12,17 @@
 .current-operator {
     background-color: chocolate;
     box-shadow: 2px 2px 5px hotpink;
+}
+
+.page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 25vh;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
