@@ -4,8 +4,12 @@
     display: block;
 }
 
+.button:hover {
+    background-color: aqua;
+}
+
 .add-to-display:active,
 .current-operator {
-    background-color: gray;
-    box-shadow: 2px 2px 5px rgb(0, 0, 0);
+    background-color: chocolate;
+    box-shadow: 2px 2px 5px hotpink;
 }

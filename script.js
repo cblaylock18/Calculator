@@ -8,8 +8,10 @@ const divide = (a, b) => parseFloat(a) / parseFloat(b);
 //current number variables
 let firstNum = "";
 let secondNum = "";
+let workingOperator = "";
 let currentOperator = "";
 let currentResult = "";
+let isEnter = 0;
 
 // operate on a pair of numbers
 const operate = (firstNum, secondNum, operator) => {
@@ -29,28 +31,34 @@ const operate = (firstNum, secondNum, operator) => {
 
 // select relevant html elements
 const display = document.querySelector(".display");
-const numbers = document.querySelectorAll(".add-to-display");
+const numbersAndPeriod = document.querySelectorAll(".add-to-display");
 const operators = document.querySelectorAll(".operator");
 
 // add event listener for input button clicks
-numbers.forEach((number) => {
+numbersAndPeriod.forEach((number) => {
     number.addEventListener("click", () => displayNumber(number.textContent));
 });
 
 operators.forEach((operator) => {
     operator.addEventListener("click", (event) => {
-        if (currentOperator === "") {
+        if (
+            event.target.textContent === "+" ||
+            event.target.textContent === "-" ||
+            event.target.textContent === "*" ||
+            event.target.textContent === "/"
+        ) {
+            variableUpdate(display.textContent);
             currentOperator = event.target.textContent;
-        } else if (currentOperator !== "" && firstNum !== "") {
-            updateOperateInputs(display.textContent, currentOperator);
-            currentOperator = event.target.textContent;
+        } else {
+            isEnter = 1;
+            variableUpdate(display.textContent);
         }
-        display.classList.add("to-be-deleted");
     });
 });
 
 // add keypad functionality
 document.addEventListener("keydown", (pressedButton) => {
+    console.log(pressedButton.key);
     if (isFinite(pressedButton.key)) {
         displayNumber(pressedButton.key * 1);
     } else if (pressedButton.key === ".") {
@@ -59,29 +67,27 @@ document.addEventListener("keydown", (pressedButton) => {
         pressedButton.key === "+" ||
         pressedButton.key === "-" ||
         pressedButton.key === "*" ||
-        pressedButton.key === "/" ||
-        pressedButton.key === "=" ||
-        pressedButton.key === "Enter"
+        pressedButton.key === "/"
     ) {
-        if (currentOperator === "") {
-            currentOperator = pressedButton.key;
-        } else if (currentOperator !== "" && firstNum !== "") {
-            updateOperateInputs(display.textContent, currentOperator);
-            currentOperator = pressedButton.key;
-        }
-        display.classList.add("to-be-deleted");
+        variableUpdate(display.textContent);
+        currentOperator = pressedButton.key;
+    } else if (pressedButton.key === "=" || pressedButton.key === "Enter") {
+        isEnter = 1;
+        variableUpdate(display.textContent);
     }
 });
 // populate the display
 const displayNumber = (number) => {
     if (display.classList.contains("to-be-deleted")) {
-        updateOperateInputs(display.textContent, currentOperator);
         display.textContent = "";
         display.classList.remove("to-be-deleted");
     }
     if (display.textContent === "0") {
         display.textContent = number;
-    } else if (display.textContent.length > 10) {
+    } else if (
+        display.textContent.length > 10 ||
+        [...display.textContent.concat(number).matchAll(/\./g)].length > 1
+    ) {
         return;
     } else if (number === "+/-") {
         display.textContent = multiply(display.textContent, -1);
@@ -90,25 +96,39 @@ const displayNumber = (number) => {
     }
 };
 
-let updateOperateInputs = function (displayNumber, operator) {
+let variableUpdate = function (number) {
     if (firstNum === "") {
-        firstNum = displayNumber;
-    } else if (secondNum === "") {
-        secondNum = displayNumber;
-        display.textContent = operate(firstNum, secondNum, currentOperator);
-        resetWithCurrentState(display.textContent);
+        firstNum = number;
+        display.classList.add("to-be-deleted");
+    } else {
+        secondNum = number;
+        performOperation(firstNum, secondNum, currentOperator);
     }
 };
 
-let resetWithCurrentState = function (displayNumber) {
-    firstNum = displayNumber;
-    secondNum = "";
+let performOperation = function (a, b, c) {
+    if (a && b && c) {
+        // Ensure all necessary data is present
+        display.textContent = operate(a, b, c);
+        secondNum = "";
+        if (isEnter) {
+            firstNum = "";
+            currentOperator = "";
+            isEnter = 0;
+        } else {
+            firstNum = display.textContent; // Maintain the result as the new firstNum
+            display.classList.add("to-be-deleted");
+        }
+    } else {
+        console.log("Insufficient data for operation.");
+        // Optionally reset states or handle the case appropriately
+    }
 };
 
 let tester = function () {
     console.log(firstNum);
     console.log(secondNum);
+    console.log(workingOperator);
     console.log(currentOperator);
     console.log(currentResult);
 };
-// first steps work, ie "9 * 6 +"" shows 54, and firstNum becomes 54, and currentOperator becomes a +, then things get weird cuz the next op doesnt work right
