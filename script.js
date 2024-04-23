@@ -39,7 +39,12 @@ numbers.forEach((number) => {
 
 operators.forEach((operator) => {
     operator.addEventListener("click", (event) => {
-        currentOperator = event.target.textContent;
+        if (currentOperator === "") {
+            currentOperator = event.target.textContent;
+        } else if (currentOperator !== "" && firstNum !== "") {
+            updateOperateInputs(display.textContent, currentOperator);
+            currentOperator = event.target.textContent;
+        }
         display.classList.add("to-be-deleted");
     });
 });
@@ -58,7 +63,12 @@ document.addEventListener("keydown", (pressedButton) => {
         pressedButton.key === "=" ||
         pressedButton.key === "Enter"
     ) {
-        currentOperator = pressedButton.key;
+        if (currentOperator === "") {
+            currentOperator = pressedButton.key;
+        } else if (currentOperator !== "" && firstNum !== "") {
+            updateOperateInputs(display.textContent, currentOperator);
+            currentOperator = pressedButton.key;
+        }
         display.classList.add("to-be-deleted");
     }
 });
@@ -84,10 +94,21 @@ let updateOperateInputs = function (displayNumber, operator) {
     if (firstNum === "") {
         firstNum = displayNumber;
     } else if (secondNum === "") {
-        secondNum = display;
+        secondNum = displayNumber;
         display.textContent = operate(firstNum, secondNum, currentOperator);
+        resetWithCurrentState(display.textContent);
     }
+};
+
+let resetWithCurrentState = function (displayNumber) {
+    firstNum = displayNumber;
+    secondNum = "";
+};
+
+let tester = function () {
     console.log(firstNum);
     console.log(secondNum);
     console.log(currentOperator);
+    console.log(currentResult);
 };
+// first steps work, ie "9 * 6 +"" shows 54, and firstNum becomes 54, and currentOperator becomes a +, then things get weird cuz the next op doesnt work right
