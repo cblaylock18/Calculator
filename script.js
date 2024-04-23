@@ -17,22 +17,68 @@ let isEnter = 0;
 const operate = (firstNum, secondNum, operator) => {
     switch (operator) {
         case "+":
-            return add(firstNum, secondNum);
+            result = add(firstNum, secondNum);
+            break;
         case "-":
-            return subtract(firstNum, secondNum);
+            result = subtract(firstNum, secondNum);
+            break;
         case "*":
-            return multiply(firstNum, secondNum);
+            result = multiply(firstNum, secondNum);
+            break;
         case "/":
-            return divide(firstNum, secondNum);
+            if (secondNum == 0) {
+                firstNum = "";
+                secondNum = "";
+                workingOperator = "";
+                currentOperator = "";
+                currentResult = "";
+                isEnter = 0;
+                display.textContent = 0;
+                display.classList.remove("to-be-deleted");
+                highlightButton();
+                return alert("AHHHHH!!!");
+            }
+            result = divide(firstNum, secondNum);
+            break;
         default:
             display.textContent = "Error"; //to be updated
     }
+    return formatResult(result);
+};
+
+let formatResult = function (number) {
+    // Convert number to string
+    let resultStr = number.toString();
+
+    // Truncate string to a maximum of 10 characters
+    if (resultStr.length > 10) {
+        // Check if the string has a decimal point
+        if (resultStr.includes(".")) {
+            // Try to fit to maximum precision without rounding issues
+            let precision = 10 - (resultStr.indexOf(".") + 1);
+            number = number.toFixed(precision > 0 ? precision : 0);
+            resultStr = number.toString();
+
+            // Final check to ensure length is within limits (e.g., when 0s are at the end after the decimal point)
+            if (resultStr.length > 10) {
+                resultStr = resultStr.substring(0, 10);
+            }
+        } else {
+            // If no decimal point and still exceeds, hard truncate (edge case for very large numbers)
+            resultStr = resultStr.substring(0, 10);
+        }
+    }
+
+    return resultStr;
 };
 
 // select relevant html elements
 const display = document.querySelector(".display");
 const numbersAndPeriod = document.querySelectorAll(".add-to-display");
 const operators = document.querySelectorAll(".operator");
+const allClear = document.querySelector(".all-clear");
+const clear = document.querySelector(".clear");
+const deleteBtn = document.querySelector(".delete");
 
 // add event listener for input button clicks
 numbersAndPeriod.forEach((number) => {
@@ -49,8 +95,10 @@ operators.forEach((operator) => {
         ) {
             variableUpdate(display.textContent);
             currentOperator = event.target.textContent;
+            highlightButton(currentOperator);
         } else {
             isEnter = 1;
+            highlightButton();
             variableUpdate(display.textContent);
         }
     });
@@ -71,9 +119,16 @@ document.addEventListener("keydown", (pressedButton) => {
     ) {
         variableUpdate(display.textContent);
         currentOperator = pressedButton.key;
+        highlightButton(currentOperator);
     } else if (pressedButton.key === "=" || pressedButton.key === "Enter") {
         isEnter = 1;
+        highlightButton();
         variableUpdate(display.textContent);
+    } else if (
+        pressedButton.key === "Backspace" ||
+        pressedButton.key === "Delete"
+    ) {
+        deleteFunction();
     }
 });
 // populate the display
@@ -122,6 +177,40 @@ let performOperation = function (a, b, c) {
     } else {
         console.log("Insufficient data for operation.");
         // Optionally reset states or handle the case appropriately
+    }
+};
+
+let highlightButton = function (button) {
+    operators.forEach((operator) => {
+        if (operator.textContent === button) {
+            operator.classList.add("current-operator");
+        } else {
+            operator.classList.remove("current-operator");
+        }
+    });
+};
+
+allClear.addEventListener("click", () => {
+    firstNum = "";
+    secondNum = "";
+    workingOperator = "";
+    currentOperator = "";
+    currentResult = "";
+    isEnter = 0;
+    display.textContent = 0;
+    display.classList.remove("to-be-deleted");
+    highlightButton();
+});
+
+clear.addEventListener("click", () => (display.textContent = 0));
+
+deleteBtn.addEventListener("click", () => deleteFunction());
+
+let deleteFunction = function () {
+    if (display.textContent.length === 1) {
+        display.textContent = 0;
+    } else {
+        display.textContent = display.textContent.slice(0, -1);
     }
 };
 

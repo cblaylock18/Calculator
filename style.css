@@ -1,17 +1,49 @@
+svg {
+    display: block;
+}
+
 .button {
     min-height: 75px;
     min-width: 75px;
-    margin: 0;
+    margin: 1px;
+    font-size: xx-large;
+    background-color: rgb(255, 229, 191);
+    border: 3px outset rgb(165, 114, 38);
 }
 
 .button:hover {
-    background-color: aqua;
+    background-color: rgb(255, 191, 15);
+}
+
+.delete {
+}
+
+.btns {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1px;
+}
+
+.display-container {
+    display: flex;
+    justify-content: end;
+    background-color: rgb(253, 223, 203);
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 8px;
+    margin-bottom: 24px;
+    min-height: 78px;
+}
+
+.display {
+    margin: 4px;
+    padding: 4px;
+    font-size: 50px;
 }
 
 .add-to-display:active,
 .current-operator {
     background-color: chocolate;
-    box-shadow: 2px 2px 5px hotpink;
+    box-shadow: 2px 2px 5px rgb(255, 123, 0);
 }
 
 .page {
@@ -22,7 +54,11 @@
 }
 
 .calculator {
+    padding: 6px;
+    background-color: rgb(255, 153, 0);
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
