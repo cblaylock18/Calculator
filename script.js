@@ -82,7 +82,9 @@ const deleteBtn = document.querySelector(".delete");
 
 // add event listener for input button clicks
 numbersAndPeriod.forEach((number) => {
-    number.addEventListener("click", () => displayNumber(number.textContent));
+    number.addEventListener("click", (event) =>
+        displayNumber(number.textContent)
+    );
 });
 
 operators.forEach((operator) => {
@@ -101,6 +103,7 @@ operators.forEach((operator) => {
             highlightButton();
             variableUpdate(display.textContent);
         }
+        event.target.blur();
     });
 });
 
@@ -190,7 +193,7 @@ let highlightButton = function (button) {
     });
 };
 
-allClear.addEventListener("click", () => {
+allClear.addEventListener("click", (event) => {
     firstNum = "";
     secondNum = "";
     workingOperator = "";
@@ -200,11 +203,18 @@ allClear.addEventListener("click", () => {
     display.textContent = 0;
     display.classList.remove("to-be-deleted");
     highlightButton();
+    event.target.blur();
 });
 
-clear.addEventListener("click", () => (display.textContent = 0));
+clear.addEventListener("click", (event) => {
+    display.textContent = 0;
+    event.target.blur();
+});
 
-deleteBtn.addEventListener("click", () => deleteFunction());
+deleteBtn.addEventListener("click", (event) => {
+    deleteFunction();
+    event.target.blur();
+});
 
 let deleteFunction = function () {
     if (display.textContent.length === 1) {
